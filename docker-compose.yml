@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: server.dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+    volumes:
+      - ./server:/app/server
+    restart: unless-stopped
+
+  client:
+    build:
+      context: .
+      dockerfile: client.dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+    depends_on:
+      - server
+    restart: unless-stopped
+
+networks:
+  default:
+    name: music-store-network
