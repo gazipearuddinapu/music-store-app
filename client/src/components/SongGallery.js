@@ -68,6 +68,15 @@ function playMusic(audioSeed) {
 
 function SongGallery({ songs, expandedRow, setExpandedRow, loading, observerTarget }) {
   const [playingIndex, setPlayingIndex] = useState(null);
+  const [likedSongs, setLikedSongs] = useState({});
+
+  const handleLike = (e, songIndex) => {
+    e.stopPropagation();
+    setLikedSongs(prev => ({
+      ...prev,
+      [songIndex]: (prev[songIndex] || 0) + 1,
+    }));
+  };
 
   const handlePlay = (song, index) => {
     setPlayingIndex(index);
@@ -96,7 +105,27 @@ function SongGallery({ songs, expandedRow, setExpandedRow, loading, observerTarg
               <div className="song-card-title">{song.title}</div>
               <div className="song-card-artist">{song.artist}</div>
               <div className="song-card-genre">{song.genre}</div>
-              <div className="song-card-likes">❤️ {song.likes} likes</div>
+              <div className="song-card-likes">
+                <button
+                  onClick={(e) => handleLike(e, song.index)}
+                  title="Like this song"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: '0.95rem',
+                    padding: '2px 8px',
+                    borderRadius: '12px',
+                    color: likedSongs[song.index] ? '#e11d48' : 'inherit',
+                    transition: 'transform 0.1s',
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.15)')}
+                  onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
+                >
+                  {likedSongs[song.index] ? '❤️' : '🤍'}{' '}
+                  {song.likes + (likedSongs[song.index] || 0)} likes
+                </button>
+              </div>
 
               {expandedRow === song.index && (
                 <div
