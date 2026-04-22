@@ -43,7 +43,7 @@ function App() {
           throw new Error('Invalid response from server');
         }
         setSongs((prev) =>
-          page === 0 ? data.songs : [...prev, ...data.songs]
+          page === 0 || prev.length === 0 ? data.songs : [...prev, ...data.songs]
         );
         setLoading(false);
       })
@@ -93,6 +93,7 @@ function App() {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    setSongs([]);          // ← আগের page-এর data clear করো
     fetchSongs(page);
     setExpandedRow(null);
     window.scrollTo(0, 0);
