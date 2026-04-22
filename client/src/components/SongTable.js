@@ -79,6 +79,17 @@ function playMusic(audioSeed) {
 function SongTable({ songs, currentPage, onPageChange, expandedRow, setExpandedRow, loading }) {
   const totalPages = 50;
 
+  // Local like state: { [songIndex]: extraLikeCount }
+  const [likedSongs, setLikedSongs] = React.useState({});
+
+  const handleLike = (e, songIndex) => {
+    e.stopPropagation();
+    setLikedSongs(prev => ({
+      ...prev,
+      [songIndex]: (prev[songIndex] || 0) + 1,
+    }));
+  };
+
   return (
     <div className="song-table">
       <div className="table-wrapper">
@@ -123,7 +134,27 @@ function SongTable({ songs, currentPage, onPageChange, expandedRow, setExpandedR
                   <td className="song-artist">{song.artist}</td>
                   <td style={{ fontSize: '0.85rem', color: 'var(--text-secondary, #888)' }}>{song.album}</td>
                   <td>{song.genre}</td>
-                  <td className="song-likes">❤️ {song.likes}</td>
+                  <td className="song-likes">
+                    <button
+                      onClick={(e) => handleLike(e, song.index)}
+                      title="Like this song"
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontSize: '1rem',
+                        padding: '2px 6px',
+                        borderRadius: '12px',
+                        transition: 'transform 0.1s',
+                        color: likedSongs[song.index] ? '#e11d48' : 'inherit',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.2)')}
+                      onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
+                    >
+                      {likedSongs[song.index] ? '❤️' : '🤍'}{' '}
+                      {song.likes + (likedSongs[song.index] || 0)}
+                    </button>
+                  </td>
                   <td>
                     <button
                       className="expand-button"
